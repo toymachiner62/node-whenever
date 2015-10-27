@@ -1,4 +1,3 @@
-# whenever
 Manage your project's cron jobs in Node.js
 
 # Purpose
