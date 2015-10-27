@@ -9,10 +9,15 @@ Use Cases:
 - I want to manage my cron job configuration in my application so it is backed up in GIT without having to manually do it separately
 
 # Install
-`$ npm install whenever`
+```js
+$ npm install whenever
+```
 
 # Getting Started
-Generate a schedule.js file with `$ wheneverize`
+Generate a schedule.js file with: 
+```js
+$ wheneverize
+```
 
 # Contribute
 TODO
