@@ -3,11 +3,71 @@ var path = require('path');
 var Q = require('q');
 var crontab = require('crontab');
 
-/*crontab.load(function(err, crontab) {
-  var jobs = crontab.jobs();
+// Expose our public functions
+module.exports.wheneverize = wheneverize;
+module.exports.updateCrontab = updateCrontab;
 
-  jobs.toString());
-});*/
+/**
+ * Wheneverizes a project
+ */
+function wheneverize() {
+
+  var scheduleFile = path.resolve(path.join(__dirname, 'schedule.js'));
+
+  shouldCreateFile(scheduleFile)
+    .then(function() {
+      return createScheduleFile();
+    })
+    .then(function() {
+      // Do something
+    })
+    .fail(function(err) {
+      console.error(err);
+      throw err;
+    });
+}
+
+function updateCrontab(file) {
+
+  console.log('file333 = ', file);
+
+  if(file === null || file === undefined) {
+    throw new Error('schedule.js does not exist. Did you run "$ whenever" to generate it?');
+  }
+
+  if(file === '') {
+    throw new Error('schedule.js is empty');
+  }
+
+  var cronjobs = require(file).cronjobs;
+
+  cronjobs.forEach(function(cronjob) {
+    crontab.load(function(err, tab) {
+      var job = tab.create(command, when, comment);
+
+      // save
+      tab.save(function(err, tab) {
+
+      });
+
+      console.log(tab);
+    });
+  });
+
+  parseSchedule(scheduleFile)
+    .then(function() {
+
+    })
+    .fail(function(err) {
+      console.error(err);
+      throw err;
+    });
+}
+
+
+/*******************
+ * PRIVATE
+ *******************/
 
 
 /**
@@ -17,7 +77,29 @@ var crontab = require('crontab');
  */
 function createScheduleFile() {
   return Q.promise(function(resolve, reject) {
-    var contents = '/**\n * This is the generated file from "Whenever" <NPM LINK HERE>.';
+    var contents = '/**\n * This file is generated from "Whenever" <NPM LINK HERE>.\n' + 
+    ' *\n' +
+    ' * module.exports.cronjobs accepts an array of cronjob objects. \n' +
+    ' * Each object has the attributes command, when, and comment.\n' +
+    ' * \n' +
+    ' * Syntax:\n' +
+    ' * command can be a string expression\n' +
+    ' * \n' +
+    ' * Examples: \n' + 
+    ' * \n' +
+    ' * \t{\n' +
+    ' * \t\tcommand: \'ls -al\',\n' +
+    ' * \t\twhen: \'* * * * *\',\n' +
+    ' * \t\tcomment: \'Oh ya know just commenting my cron job\'\n' +
+    ' * \t}\n' +
+    '*/\n' +
+    'module.exports.cronjobs = [\n' +
+    '\t{\n' +
+    '\t\tcommand: \'<command to execute>\',\n' +
+    '\t\twhen: \'<when to execute>\',\n' +
+    '\t\tcomment: \'<comment to be put in the crontab for this entry>\'\n' +
+    '\t}\n' +
+    ']';
     fs.writeFile('schedule.js', contents, function(err) {
       if(err) {
         return reject(err);
@@ -54,35 +136,14 @@ function shouldCreateFile(file) {
   });
 }
 
-/**
- * Wheneverizes a project
- */
-function wheneverize() {
+function parseSchedule(file) {
+  return Q.promise(function(resolve, reject) {
+    fs.readFile(file, function(err, contents) {
+      if(err) {
+        return reject(err);
+      }
 
-  //console.log(path.resolve(path.join(__dirname, 'schedule.js')));
-
-
-
-  
-  /*if(path.resolve(path.join(__dirname, 'schedule.js'))) {
-    console.error('schedule.js already exists!');
-    return;
-  }*/
-
-  var scheduleFile = path.resolve(path.join(__dirname, 'schedule.js'));
-
-  shouldCreateFile(scheduleFile)
-    .then(function() {
-      return createScheduleFile();
-    })
-    .then(function() {
-      // Do something
-    })
-    .fail(function(err) {
-      console.error(err);
-      throw err;
+      return resolve();
     });
+  });
 }
-
-module.exports.wheneverize = wheneverize;
-
