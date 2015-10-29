@@ -46,7 +46,7 @@ function updateCrontab(file) {
       console.log('crontab updated!');
     })
     .fail(function(err) {
-      if(err.errno === 34) {
+      if(err.code === 'ENOENT') {
         var error = new Error('schedule.js does not exist');
         console.error(error);
         throw error;
@@ -243,9 +243,10 @@ function shouldCreateFile(file) {
       }
 
       // If the file does not exist, resolve, else reject with the error
-      if(err.errno === 34) {
+      if(err.code === 'ENOENT') {
         return resolve();
       } else {
+        console.log('errrrrr = ', err);
         return reject(err);
       }
     });
