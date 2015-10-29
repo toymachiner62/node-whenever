@@ -1,4 +1,4 @@
-Manage your project's cron jobs in Node.js
+> Manage your project's cron jobs in Node.js and automatically update your crontab with a simple command!
 
 # Purpose
 This module allows you to manage the cron jobs related to your application and deploy them easily.
@@ -14,15 +14,23 @@ $ npm install whenever
 ```
 
 # Getting Started
-```js
+```sh
 $ wheneverize
 ```
 
-This generates an initial `schedule.js` file.
+This generates an initial `schedule.js` file. Setup your cron jobs in `schedule.js`.
 
-Setup your cron jobs in `schedule.js`.
+```sh
+$ updateCrontab
+```
+
+This is how you update your crontab from your `schedule.js` file. Run this command and your crontab will be updated with the contents of your `schedule.js` file.
+
+# Testing
+1. Install mocha globally
+2. From project root, run `$ mocha test/index.js`
 
 # Contribute
-TODO
+I'm happy to accept pull requests. If you want to contribute to the project please make sure you add a test(s).
 
 Enjoy!

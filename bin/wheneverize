@@ -1,3 +1,4 @@
 #!/usr/bin/env node
-
-require('../index.js').wheneverize();
+var path = require('path');
+var fs = require('fs');
+require(path.dirname(fs.realpathSync(__filename)) + '/../index.js').wheneverize();

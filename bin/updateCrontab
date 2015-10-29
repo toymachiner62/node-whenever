@@ -1,4 +1,4 @@
 #!/usr/bin/env node
-
 var path = require('path');
-require('../index.js').updateCrontab(path.join(process.cwd(), 'schedule.js'));
+var fs = require('fs');
+require(path.dirname(fs.realpathSync(__filename)) + '/../index.js').updateCrontab(path.join(process.cwd(), 'schedule.js'));

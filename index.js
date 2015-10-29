@@ -13,7 +13,7 @@ module.exports.updateCrontab = updateCrontab;
  */
 function wheneverize() {
 
-  var scheduleFile = path.resolve(path.join(__dirname, 'schedule.js'));
+  var scheduleFile = path.resolve(path.join(process.cwd(), 'schedule.js'));
 
   shouldCreateFile(scheduleFile)
     .then(function() {
@@ -41,6 +41,9 @@ function updateCrontab(file) {
     })
     .then(function(cronjobs) {
       createCronjobs(cronjobs);
+    })
+    .then(function() {
+      console.log('crontab updated!');
     })
     .fail(function(err) {
       if(err.errno === 34) {
@@ -80,7 +83,7 @@ function getCronJobs(file) {
 
   return Q.resolve(cronjobs);
 }
-
+path.dirname(fs.realpathSync(__filename)) + '/../index.js'
 /**
  * Validate that the cronjobs have at least the necessary attributes
  * 
@@ -168,6 +171,57 @@ function createScheduleFile() {
 }
 
 /**
+ * Creates entries in the crontab
+ * 
+ * @param cronjobs  - The jobs to create entries in the crontab for
+ */
+function createCronjobs(cronjobs) {
+  return Q.promise(function(resolve, reject) {
+
+    crontab.load(function(err, tab) {
+
+      if(err) {
+        return reject(err);
+      }
+
+      console.log('tab before = ', tab);
+      console.log('tab.jobs() before = ', tab.jobs());
+
+      cronjobs.forEach(function(cronjob, i) {
+        var job = tab.create(cronjob.command, cronjob.when, cronjob.comment);
+        var job2 = tab.create('ls -al', '* * * * *', cronjob.comment);
+
+        console.log('job = ', job);
+        console.log('job2 = ', job2);
+        //tab.create(cronjob.command, cronjob.when, cronjob.comment);
+        //tab.create('ls -al', '* * * * *', cronjob.comment);
+
+        console.log('tab after = ', tab);
+        console.log('tab.jobs() after = ', tab.jobs());
+
+        console.log('tab.jobs()[i].isValid() = ', tab.jobs()[i].isValid());
+
+        if(!tab.jobs()[i].isValid()) {
+          return reject('Cronjob syntax not valid');
+        }
+      });
+
+      // save the cronjobs
+      tab.save(function(err, tab) {
+        if(err) {
+          return reject(err);
+        }
+
+        console.log('tab after = ', tab.jobs().toString());
+        return resolve();
+      });
+
+      
+    });
+  });
+}
+
+/**
  * Ensure schedule.js does not already exist.
  * 
  * @param file  - The file to check if exists
@@ -175,12 +229,16 @@ function createScheduleFile() {
  */
 function shouldCreateFile(file) {
   return Q.promise(function(resolve, reject) {
+    console.log('file = ', file);
     fs.stat(file, function(err, stats) {
-      
+        
+        console.log('err = ', err);
+
+
       // If the file already exists
       if(err === null) {
         if(stats.isFile()) {
-          return reject(new Error('schedule.js already exists!'));
+          return reject('schedule.js already exists!');
         }
       }
 
