@@ -1,5 +1,8 @@
 > Manage your project's cron jobs in Node.js and automatically update your crontab with a simple command!
 
+[![Code Climate](https://codeclimate.com/github/toymachiner62/node-whenever/badges/gpa.svg)](https://codeclimate.com/github/toymachiner62/node-whenever)
+
+
 # Purpose
 This module allows you to manage the cron jobs related to your application and deploy them easily.
 
