@@ -28,7 +28,6 @@ describe('Whenever', function() {
         var child = exec('cd test/empty; node ../../bin/wheneverize', function(err, stdout, stderr) {
           expect(err).to.be.null;
           expect(path.resolve('./test/empty/schedule.js')).to.be.a.file;
-          exec('rm -f test/empty');
           done();
         });
       });
