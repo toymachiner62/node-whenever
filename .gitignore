@@ -25,3 +25,9 @@ build/Release
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
+
+# OSX Folder files
+.DS_Store
+
+# Unit test generated files
+test/**/schedule.js

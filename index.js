@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var Q = require('q');
 var crontab = require('crontab');
+var _ = require('lodash');
 
 // Expose our public functions
 module.exports.wheneverize = wheneverize;
@@ -19,7 +20,7 @@ function wheneverize() {
       return createScheduleFile();
     })
     .then(function() {
-      // Do something
+      console.log('schedule.js created!');
     })
     .fail(function(err) {
       console.error(err);
@@ -27,47 +28,104 @@ function wheneverize() {
     });
 }
 
+/**
+ * Reads the schedule.js file and creates the cronjobs
+ * 
+ * @param file  - The file to parse the cronjobs from (schedule.js)
+ */
 function updateCrontab(file) {
 
-  console.log('file333 = ', file);
-
-  if(file === null || file === undefined) {
-    throw new Error('schedule.js does not exist. Did you run "$ whenever" to generate it?');
-  }
-
-  if(file === '') {
-    throw new Error('schedule.js is empty');
-  }
-
-  var cronjobs = require(file).cronjobs;
-
-  cronjobs.forEach(function(cronjob) {
-    crontab.load(function(err, tab) {
-      var job = tab.create(command, when, comment);
-
-      // save
-      tab.save(function(err, tab) {
-
-      });
-
-      console.log(tab);
-    });
-  });
-
-  parseSchedule(scheduleFile)
+  validateFile(file)
     .then(function() {
-
+      return getCronJobs(file);
+    })
+    .then(function(cronjobs) {
+      createCronjobs(cronjobs);
     })
     .fail(function(err) {
-      console.error(err);
-      throw err;
+      if(err.errno === 34) {
+        var error = new Error('schedule.js does not exist');
+        console.error(error);
+        throw error;
+      } else {
+        console.error(err);
+        throw err;
+      }
     });
 }
-
 
 /*******************
  * PRIVATE
  *******************/
+
+/**
+ * Gets the cronjobs from the file
+ * 
+ * @param file  - The file to get the cronjobs from
+ * @return      - Returns an array of cronjobs
+ */
+function getCronJobs(file) {
+
+  var cronjobs = require(file).cronjobs;
+
+  if(!cronjobs.length) {
+    return Q.reject('schedule.js is not valid.');
+  }
+
+  var validate = validateCronjobs(cronjobs);
+
+  if(_.isError(validate)) {
+    return Q.reject(validate);
+  }
+
+  return Q.resolve(cronjobs);
+}
+
+/**
+ * Validate that the cronjobs have at least the necessary attributes
+ * 
+ * @param cronjobs  - The cronjobs to validate have the necessary attributes
+ * @return          - True if there are no errors. An Error object if there is an error
+ */
+function validateCronjobs(cronjobs) {
+  var errors = null;
+
+  cronjobs.forEach(function(cronjob) {
+    // Ensure the command attribute exists
+    if(!_.has(cronjob, 'command')) {
+      errors = new Error('cronjob definition does not have the property "command"');
+    }
+
+    // Ensure the when attribute exists
+    if(!_.has(cronjob, 'when')) {
+      errors = new Error('cronjob definition does not have the property "when"');
+    }
+  });
+
+  return errors ? errors : true
+}
+
+/**
+ * Validate the cronjob file is not empty and has the appropriate export
+ *
+ * @param file  - The file to validate
+ */
+function validateFile(file) {
+  return Q.promise(function(resolve, reject) {
+    fs.readFile(path.join(file), function(err, contents) {
+
+    if(err) {
+      return reject(err);
+    }
+
+    if(contents.toString() === '') {
+      return reject('schedule.js is empty');
+    }
+    
+    return resolve();
+    });
+  });
+}
 
 
 /**
@@ -127,23 +185,11 @@ function shouldCreateFile(file) {
       }
 
       // If the file does not exist, resolve, else reject with the error
-      if(err.code === 'ENOENT') {
+      if(err.errno === 34) {
         return resolve();
       } else {
         return reject(err);
       }
-    });
-  });
-}
-
-function parseSchedule(file) {
-  return Q.promise(function(resolve, reject) {
-    fs.readFile(file, function(err, contents) {
-      if(err) {
-        return reject(err);
-      }
-
-      return resolve();
     });
   });
 }

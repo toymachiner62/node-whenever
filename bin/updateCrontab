@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+var path = require('path');
+require('../index.js').updateCrontab(path.join(process.cwd(), 'schedule.js'));

@@ -4,16 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/index.js"
   },
-  "author": "",
+  "author": "Tom Caflisch (tomcaflisch@gmail.com)",
   "license": "ISC",
-  "dependencies": {
-    "crontab": ">=1.1.0",
-    "q": "^1.4.1"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toymachiner62/whenever/tree/master"
   },
+  
+
   "devDependencies": {
     "chai": "^3.4.0",
     "mocha": "^2.3.3"
+  },
+  "dependencies": {
+    "crontab": ">=1.1.0",
+    "lodash": "^3.10.1",
+    "q": "^1.4.1"
   }
 }
