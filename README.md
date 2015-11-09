@@ -34,6 +34,8 @@ This is how you update your crontab from your `schedule.js` file. Run this comma
 1. Install mocha globally
 2. From project root, run `$ mocha test/index.js`
 
+** Note ** Running the tests actually updates your cron tab
+
 # Contribute
 I'm happy to accept pull requests. If you want to contribute to the project please make sure you add a test(s).
 
