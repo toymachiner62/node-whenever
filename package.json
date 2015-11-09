@@ -1,6 +1,6 @@
 {
   "name": "node-whenever",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Manage your project's cron jobs in Node.js and automatically update your crontab with a simple command!",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,6 @@
     "type": "git",
     "url": "https://github.com/toymachiner62/whenever/tree/master"
   },
-
   "devDependencies": {
     "chai": "^3.4.0",
     "mocha": "^2.3.3"
