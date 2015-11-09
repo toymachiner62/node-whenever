@@ -18,7 +18,7 @@
     "mocha": "^2.3.3"
   },
   "dependencies": {
-    "crontab": ">=1.1.0",
+    "crontab": "toymachiner62/node-crontab",
     "lodash": "^3.10.1",
     "q": "^1.4.1"
   }
