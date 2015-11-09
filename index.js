@@ -184,23 +184,8 @@ function createCronjobs(cronjobs) {
         return reject(err);
       }
 
-      console.log('tab before = ', tab);
-      console.log('tab.jobs() before = ', tab.jobs());
-
       cronjobs.forEach(function(cronjob, i) {
         var job = tab.create(cronjob.command, cronjob.when, cronjob.comment);
-        var job2 = tab.create('ls -al', '* * * * *', cronjob.comment);
-
-        console.log('job = ', job);
-        console.log('job2 = ', job2);
-        //tab.create(cronjob.command, cronjob.when, cronjob.comment);
-        //tab.create('ls -al', '* * * * *', cronjob.comment);
-
-        console.log('tab after = ', tab);
-        console.log('tab.jobs() after = ', tab.jobs());
-
-        console.log('tab.jobs()[i].isValid() = ', tab.jobs()[i].isValid());
-
         if(!tab.jobs()[i].isValid()) {
           return reject('Cronjob syntax not valid');
         }
@@ -212,10 +197,8 @@ function createCronjobs(cronjobs) {
           return reject(err);
         }
 
-        console.log('tab after = ', tab.jobs().toString());
         return resolve();
       });
-
       
     });
   });
@@ -229,12 +212,9 @@ function createCronjobs(cronjobs) {
  */
 function shouldCreateFile(file) {
   return Q.promise(function(resolve, reject) {
-    console.log('file = ', file);
+
     fs.stat(file, function(err, stats) {
-        
-        console.log('err = ', err);
-
-
+      
       // If the file already exists
       if(err === null) {
         if(stats.isFile()) {
@@ -246,7 +226,6 @@ function shouldCreateFile(file) {
       if(err.code === 'ENOENT') {
         return resolve();
       } else {
-        console.log('errrrrr = ', err);
         return reject(err);
       }
     });
