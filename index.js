@@ -186,7 +186,7 @@ function createCronjobs(cronjobs) {
 
       cronjobs.forEach(function(cronjob, i) {
         var job = tab.create(cronjob.command, cronjob.when, cronjob.comment);
-        if(!tab.jobs()[i].isValid()) {
+        if(job == null || job.isValid()) {
           return reject('Cronjob syntax not valid');
         }
       });
