@@ -14,7 +14,7 @@ Use Cases:
 
 # Install
 ```js
-$ npm install whenever
+$ npm install node-whenever
 ```
 
 # Getting Started
