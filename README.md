@@ -14,7 +14,7 @@ Use Cases:
 
 # Install
 ```js
-$ npm install node-whenever
+$ npm install -g node-whenever
 ```
 
 # Getting Started
