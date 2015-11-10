@@ -40,7 +40,7 @@ function updateCrontab(file) {
       return getCronJobs(file);
     })
     .then(function(cronjobs) {
-      createCronjobs(cronjobs);
+      return createCronjobs(cronjobs);
     })
     .then(function() {
       console.log('crontab updated!');
@@ -138,7 +138,7 @@ function validateFile(file) {
  */
 function createScheduleFile() {
   return Q.promise(function(resolve, reject) {
-    var contents = '/**\n * This file is generated from "Whenever" <NPM LINK HERE>.\n' + 
+    var contents = '/**\n * This file is generated from "node-whenever" https://www.npmjs.com/package/node-whenever.\n' + 
     ' *\n' +
     ' * module.exports.cronjobs accepts an array of cronjob objects. \n' +
     ' * Each object has the attributes command, when, and comment.\n' +
@@ -186,7 +186,7 @@ function createCronjobs(cronjobs) {
 
       cronjobs.forEach(function(cronjob, i) {
         var job = tab.create(cronjob.command, cronjob.when, cronjob.comment);
-        if(job == null || job.isValid()) {
+        if(job == null || !job.isValid()) {
           return reject('Cronjob syntax not valid');
         }
       });
