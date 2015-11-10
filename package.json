@@ -6,6 +6,11 @@
   "scripts": {
     "test": "mocha test/index.js"
   },
+  "bin": {
+    "wheneverize": "./bin/wheneverize",
+    "updateCrontab": "./bin/updateCrontab"
+  },
+  "preferGlobal": true,
   "author": "Tom Caflisch (tomcaflisch@gmail.com)",
   "license": "ISC",
   "repository": {
