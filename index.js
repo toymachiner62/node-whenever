@@ -51,7 +51,11 @@ function updateCrontab(file) {
         console.error(error);
         throw error;
       } else {
-        console.error(err);
+        if(err.message) {
+          console.error(err.message);
+        } else {
+          console.error(err);
+        }
         throw err;
       }
     });
@@ -83,7 +87,7 @@ function getCronJobs(file) {
 
   return Q.resolve(cronjobs);
 }
-path.dirname(fs.realpathSync(__filename)) + '/../index.js'
+
 /**
  * Validate that the cronjobs have at least the necessary attributes
  * 
