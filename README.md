@@ -28,7 +28,7 @@ This generates an initial `schedule.js` file. Setup your cron jobs in `schedule.
 $ updateCrontab
 ```
 
-This is how you update your crontab from your `schedule.js` file. Run this command and your crontab will be updated with the contents of your `schedule.js` file.
+This is how you update your crontab from your `schedule.js` file. Run this command and all cronjobs in your crontab will be *DELETED* and then the crontab will be updated with the contents of your `schedule.js` file.
 
 # Testing
 1. Install mocha globally

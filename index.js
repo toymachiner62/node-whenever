@@ -37,6 +37,9 @@ function updateCrontab(file) {
 
   validateFile(file)
     .then(function() {
+      return clearCrontab();
+    })
+    .then(function() {
       return getCronJobs(file);
     })
     .then(function(cronjobs) {
@@ -64,6 +67,37 @@ function updateCrontab(file) {
 /*******************
  * PRIVATE
  *******************/
+
+/**
+ * Clears all jobs from the crontab. Does not remove commented out jobs
+ */
+function clearCrontab() {
+
+  return Q.promise(function(resolve, reject) {
+    crontab.load(function(err, tab) {
+
+      if(err) {
+        return reject(err);
+      }
+
+      var jobs = tab.jobs();
+
+      jobs.forEach(function(job) {
+        tab.remove(job);
+      });
+
+      // save the crontab with the jobs cleared
+      tab.save(function(err, tab) {
+        if(err) {
+          return reject(err);
+        }
+
+        return resolve();
+      });
+      
+    });
+  });
+}
 
 /**
  * Gets the cronjobs from the file
@@ -109,7 +143,7 @@ function validateCronjobs(cronjobs) {
     }
   });
 
-  return errors ? errors : true
+  return errors ? errors : true;
 }
 
 /**
